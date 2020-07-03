@@ -1,11 +1,9 @@
 /*
- *  start_webots.cpp
+ *  coppeliasim_run.cpp
  *
- *  Starts the Webots Simulator using a system() call, so Webots can be 
+ *  Starts the coppeliasim Simulator using a system() call, so coppeliasim can be 
  *  started from a roslaunch file.
  *
- *  Date: September 2012
- *  Authors: David Butterworth
  *  
  */
 
@@ -42,50 +40,57 @@
 #include <iostream> // stringstream
 
 /*
-Define Webots executable name. 
-The full path will come from the PATH environment variable.
-Prefix with 'optirun' for Linux NVidia Bumblebee graphics driver
 
-Webots command line arguments: 
-   --minimize    
-   --mode=run
-   --mode=stop
-   (http://www.cyberbotics.com/dvd/common/doc/webots/guide/section2.2.html)
+coppeliasim command line arguments: 
+-h: runs CoppeliaSim in headless mode (i.e. without any GUI)
+
+-sXXX: automatically start the simulation. 
+    with XXX represents an optional simulation time in milliseconds after which simulation should stop again.
+
+-q: automatically quits CoppeliaSim after the first simulation run ended.
+
+-gREMOTEAPISERVERSERVICE_PORT_DEBUG_PREENABLESYNC: the argument can be used to request 
+    a continuous legacy remote API server service to be started at CoppeliaSim start-up. 
+    For that to happen, replace in above string following:
+PORT is the port number
+DEBUG is the debug mode (set to TRUE or FALSE)
+PREENABLESYNC allows to preenable the synchronous mode (set to TRUE or FALSE)
+
+-XXX.ttt: loads a CoppeliaSim scene.
+-XXX.ttm: loads a CoppeliaSim model.
+-XXX.brs: loads an XReality scene.
+-XXX.brm: loads an XReality model.
 */
 
-#define WEBOTS_EXECUTABLE "webots --mode=run"
-//#define WEBOTS_EXECUTABLE "optirun webots --mode=run"
-
+#define COPPELIASIM_EXECUTABLE "cd ~/CoppeliaSim && ./coppeliaSim.sh"
 //----------------------------------------------------------------------------//
 
 int main(int argc, char **argv)
 {
-    // node name: webots
-    ros::init(argc, argv, "webots");
+    // node name: coppeliasim
+    ros::init(argc, argv, "coppeliasim");
+    ROS_INFO("Starting coppeliasim simulator... ");
+    
+    std::stringstream ss;
+    switch  (argc){
+        case 2:
+            ss << COPPELIASIM_EXECUTABLE << " " << argv[1];
+            break;
 
-    if ( argc != 2 ) 
-    {
-        // no additional arguments, start Webots with previously opened world
-        ROS_INFO("Starting Webots simulator... \n");
-        if (system(WEBOTS_EXECUTABLE)) {}
-    } 
-    else 
-    {
-        // additional arguments:
-        // argv[0] is full path to this ROS Node
-        // argv[1] is full path to world file
-        // argv[2] is full path to ROS log file
-        ROS_INFO("Starting Webots simulator... ");
-        ROS_INFO("Loading world: %s \n", argv[1]);
+        case 3:
+            ss << COPPELIASIM_EXECUTABLE << " " << argv[1] << " " << argv[2];
+            break;
 
-        std::stringstream ss;
-        ss << WEBOTS_EXECUTABLE << " " << argv[1];
-        if (system( ss.str().c_str() )) {}
+        case 4:
+            ss << COPPELIASIM_EXECUTABLE << " " << argv[1] << " " << argv[2] << " " << argv[3];
+            break;
+
+        default:
+            ss << COPPELIASIM_EXECUTABLE ;
     }
 
-    // No need to ros::spin()
-    // When we quit Webots, ROS will register
-    // that the webots node is shutting down.
+    if (system( ss.str().c_str() )) {}
+
 
     return 0;
 }
