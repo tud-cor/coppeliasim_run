@@ -4,7 +4,7 @@ This package runs CoppeliaSim as a ROS node using a `system(..)` call.
 ### Usage
 
 ```
-# to launch coppeliasim as a ros-node from a terminal 
+# to launch CoppeliaSim as a ROS node from a terminal 
 rosrun coppeliasim_run start_coppeliasim [arguments]
 ```
 
