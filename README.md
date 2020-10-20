@@ -1,5 +1,5 @@
 # coppeliasim_run
-This package runs coppeliasim as a ROS node using a system() call.
+This package runs CoppeliaSim as a ROS node using a `system(..)` call.
 
 ### Usage
 
